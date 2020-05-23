@@ -1,5 +1,5 @@
 {
-  "name": "report-viewer",
+  "name": "reportiewer",
   "description": "Static html page to load and show nodejs report",
   "version": "0.0.1",
   "scripts": {

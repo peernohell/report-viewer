@@ -1,46 +1,48 @@
 <style>
-	h1, figure, p {
-		text-align: center;
-		margin: 0 auto;
+	.main {
+		display: flex;
+		flex: 1;
 	}
 
 	h1 {
-		font-size: 2.8em;
-		text-transform: uppercase;
-		font-weight: 700;
-		margin: 0 0 0.5em 0;
-	}
-
-	figure {
-		margin: 0 0 1em 0;
-	}
-
-	img {
-		width: 100%;
-		max-width: 400px;
-		margin: 0 0 1em 0;
-	}
-
-	p {
-		margin: 1em auto;
-	}
-
-	@media (min-width: 480px) {
-		h1 {
-			font-size: 4em;
-		}
+		margin: 20px auto 0;
 	}
 </style>
 
+<script>
+	let main;
+	let isOver = false;
+	let report;
+	function handleDragEnter () {
+		if (event.target !== main) return;
+		console.log("TODO DRAG enter", event.target)
+		isOver = true;
+	}
+
+	function handleDragLeave (event) {
+		if (event.target !== main) return;
+		console.log("TODO DRAG Leave", event.target, event.currentTarget)
+	}
+
+	async function handleDragDrop(event) {
+		console.log('drop')
+		event.preventDefault();
+		isOver = false;
+		const json = await event.dataTransfer.files[0].text();
+		report = JSON.parse(json);
+	}
+</script>
+
 <svelte:head>
-	<title>Sapper project template</title>
+	<title>Report Viewer</title>
 </svelte:head>
 
-<h1>Welcome to Report viewer</h1>
-
-<figure>
-	<img alt='Success Kid' src='successkid.jpg'>
-	<figcaption>Have fun with Sapper!</figcaption>
-</figure>
-
-<p><strong>Try editing this file (src/routes/index.svelte) to test live reloading.</strong></p>
+<div class="main"	class:over={isOver} on:dragenter={handleDragEnter} on:dragleave={handleDragLeave}	on:drop={handleDragDrop} bind:this={main} ondragover="return false">
+	{#if report}
+		<pre style="overflow-y: scroll;">
+			{JSON.stringify(report, undefined, '  ')}
+		</pre>
+	{:else}
+		<h1>Drag your report</h1>
+	{/if}
+</div>
