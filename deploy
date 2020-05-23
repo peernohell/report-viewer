@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BASE_NAME=lemtv
+BASE_NAME=report-viewer
 
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
