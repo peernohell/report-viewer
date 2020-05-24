@@ -10,7 +10,6 @@
 		height: 100vh;
 		background-color: red;
 		color: #333;
-		text-align: center;
 	}
 
 	:global(body, #sapper) {

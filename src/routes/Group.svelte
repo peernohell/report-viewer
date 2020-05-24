@@ -39,9 +39,12 @@
     font-weight: 200;
   }
 
+  .stats:not(.string) {
+    text-align: center;
+  }
+
   .stats.string {
     flex-direction: row;
-    text-align: left;
   }
 
   .stats.string .name {
