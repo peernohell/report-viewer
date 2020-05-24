@@ -1,5 +1,5 @@
 <style>
-  .stats-group {
+  .data-group {
     flex: 1;
 
     display: flex;
@@ -7,7 +7,8 @@
     justify-content: space-around;
   }
 
-  .stats-group.column { flex-direction: column; }
+  .data-group.raw { flex-direction: raw; }
+  .data-group.column { flex-direction: column; }
 
   .stats {
     flex: 1;
@@ -19,7 +20,7 @@
     /* background-color: rgba(0, 0, 0, 0.1); */
   }
 
-  .stats-group:not(.column) .stats { margin: 0 10px; }
+  .data-group:not(.column) .stats { margin: 0 10px; }
   .stats:first-of-type { margin-left: 0; }
   .stats:last-of-type { margin-right: 0; }
 
@@ -71,10 +72,11 @@
 
 <script>
   import { humanize } from './utils';
-  export let value;
-  export let context;
+  export let group;
+  export let sectionName;
+  export let direction;
 
-  const direction = ['header', 'environmentVariables', 'sharedObjects'].includes(context) ? 'column' : 'raw';
+  if (!direction) direction = ['header', 'environmentVariables', 'sharedObjects'].includes(sectionName) ? 'column' : 'raw';
 
   function formatBytes(bytes, decimals = 2) {
       if (bytes === 0) return '0 B';
@@ -89,7 +91,7 @@
   }
 
   function humanizeNumber (value, name) {
-    if (context.includes('Heap')) return formatBytes(value, 2);
+    if (sectionName.includes('Heap')) return formatBytes(value, 2);
     if (name.includes('Memory')) return formatBytes(value, 2);
     if (name.includes('Bytes')) return formatBytes(value, 2);
     return value;
@@ -97,8 +99,8 @@
 
 </script>
 
-<div class="stats-group {direction}">
-  {#each Object.entries(value) as [name, value]}
+<div class="data-group {direction}">
+  {#each Object.entries(group) as [name, value]}
     {#if ['number', 'string'].includes(typeof value)}
       <div class="stats {typeof value}">
         <div class="name">{humanize(name.replace(/memory/i, ''))}</div>
@@ -107,13 +109,14 @@
       </div>
     {:else if value instanceof Array}
       {#each value as val}
-        <svelte:self context={context} value={({[name]: val })} />
+        <svelte:self sectionName={sectionName} group={({[name]: val })} />
       {/each}
     {:else}
       <div class="sub-group">
-        <h2>{humanize(name)}</h2>
-        <svelte:self context={context} value={value} />
+        <h2>{name}</h2>
+        <svelte:self sectionName={sectionName} group={value} />
       </div>
     {/if}
   {/each}
 </div>
+
